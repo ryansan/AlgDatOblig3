@@ -81,11 +81,102 @@ public class ObligSBinTre<T> implements Beholder<T>{
         }
 
         @Override
-
         public boolean fjern(T verdi) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
+
+            if (verdi == null) {
+                return false;  // treet har ingen nullverdier
+            }
+
+            Node<T> p = rot, forelderTilP = null;   // forelderTilP skal være forelder til p
+
+            while (p != null){            // leter etter verdi
+
+                int cmp = comp.compare(verdi,p.verdi);      // sammenligner
+
+                if (cmp < 0) {      // går til venstre
+                    forelderTilP = p;
+                    p = p.venstre;
+                }
+
+                else if (cmp > 0) {  // går til høyre
+                    forelderTilP = p;
+                    p = p.høyre;
+                }
+                else {
+                    break;    // den søkte verdien ligger i p
+                }
+            }
+
+
+            if (p == null) {
+                return false;   // finner ikke verdi
+            }
+
+            if (p.venstre == null || p.høyre == null)  // Tilfelle 1) og 2)
+            {
+
+                if(p.venstre == null && p.høyre == null){
+                    if(p == rot){
+                        rot = null;
+                    }
+                    else if(p == forelderTilP.venstre){
+                        forelderTilP.venstre = null;
+                    }else if(p == forelderTilP.høyre) {
+                        forelderTilP.høyre = null;
+                    }
+                }else{
+                    Node<T> barn = p.venstre != null ? p.venstre : p.høyre;  // b for barn
+
+                    if (p == rot) {
+                        rot = barn;
+                    }
+                    else if (p == forelderTilP.venstre) {
+                        forelderTilP.venstre = barn;
+                        barn.forelder = forelderTilP;
+                    }
+                    else {
+                        forelderTilP.høyre = barn;
+                        barn.forelder = forelderTilP;
+                    }
+                }
+
+
+            }
+            else  // Tilfelle 3)
+            {
+                Node<T> s = p, r = p.høyre;   // finner neste i inorden
+
+                while (r.venstre != null) {
+                    s = r;    // s er forelder til r
+                    r = r.venstre;
+                }
+
+                p.verdi = r.verdi;   // kopierer verdien i r til p
+
+                if (s != p) {
+                    s.venstre = r.høyre;
+                } else {
+                    s.høyre = r.høyre;
+                }
+            }
+
+            antall--;   // det er nå én node mindre i treet
+            return true;
+        }
+
+
         public int fjernAlle(T verdi) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
+
+            Node<T> p = rot;
+
+            int antallF = 0;
+
+            while(fjern(verdi)){
+                antallF++;
+            }
+
+            return antallF;
+        }
 
 
         @Override
@@ -120,8 +211,23 @@ public class ObligSBinTre<T> implements Beholder<T>{
 
 
         @Override
-
         public void nullstill() {
+
+            if(tom()){
+                return;
+            }
+
+            Node<T> p = rot;
+
+            while (p.venstre != null) {
+                p = p.venstre;
+            }
+
+            while(!tom()){
+                fjern(p.verdi);
+                p = nesteInorden(p);
+            }
+
 
         }
 
@@ -138,9 +244,7 @@ public class ObligSBinTre<T> implements Beholder<T>{
                 while (p.forelder != null && p.forelder.høyre == p) {
                     p = p.forelder;
                 }
-                Node<T> temp = p.forelder;
-                return temp;
-                //return p.forelder;
+                return p.forelder;
             }
         }
 
@@ -178,9 +282,59 @@ public class ObligSBinTre<T> implements Beholder<T>{
         }
 
 
+        public String omvendtString() {
 
-    public String omvendtString() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+
+            if (tom()) {
+                return "[]";            // tomt tre
+            }
+
+            int teller = antall();
+
+            if(teller == 1){
+                return "[" + rot + "]";
+            }
+
+            Deque<Node<T>> stakk = new ArrayDeque<>();
+
+            Node<T> p = rot;   // starter i roten og går til venstre
+
+            for ( ; p.høyre != null; p = p.høyre) {
+                stakk.push(p);
+            }
+
+
+            while (true)
+            {
+                //      // oppgaven utføres
+
+                if(teller == 1){
+                    sb.append(p.verdi + "]");
+                }else{
+                    sb.append(p.verdi + ", ");
+                    teller--;
+                }
+
+
+                if (p.venstre != null){          // til venstre i høyre subtre
+
+                    for (p = p.venstre; p.høyre != null; p = p.høyre){
+                        stakk.push(p);
+                    }
+                }
+                else if (!stakk.isEmpty()){
+                    p = stakk.pop();   // p.høyre == null, henter fra stakken
+                }
+                else break;          // stakken er tom - vi er ferdig
+
+            } // while
+
+            return sb.toString();
+        }
+
+
     public String høyreGren() {
         throw new UnsupportedOperationException("Ikke kodet ennå!"); }
     public String lengstGren() {

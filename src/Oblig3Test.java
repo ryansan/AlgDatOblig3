@@ -21,11 +21,11 @@ public class Oblig3Test
     {
         int antallFeil = 0;
 
-//        antallFeil += oppgave1();
-//        antallFeil += oppgave2();
+        antallFeil += oppgave1();
+        antallFeil += oppgave2();
         antallFeil += oppgave3();
-//        antallFeil += oppgave4();
-//        antallFeil += oppgave5();
+        antallFeil += oppgave4();
+        antallFeil += oppgave5();
 //        antallFeil += oppgave6();
 //        antallFeil += oppgave7();
 //        antallFeil += oppgave8();
@@ -384,7 +384,7 @@ public class Oblig3Test
             System.out.println("Oppgave 5l: Feil i fjern(T)!");
         }
 
-        tre.nullstill();
+       tre.nullstill();
 
         if (tre.antall() != 0)
         {
@@ -410,6 +410,8 @@ public class Oblig3Test
             System.out.println
                     ("Oppgave 5o: Skal ikke kaste unntak når et tomt tre nullstilles!");
         }
+
+
 
         try
         {
@@ -447,6 +449,7 @@ public class Oblig3Test
         int[] b = {1,4,1,3,1,2,1,1};
         for (int verdi : b) tre.leggInn(verdi);
 
+        String bts = tre.toString();
         if (tre.fjernAlle(1) != 5)
         {
             antallFeil++;
