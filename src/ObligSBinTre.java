@@ -335,16 +335,130 @@ public class ObligSBinTre<T> implements Beholder<T>{
         }
 
 
-    public String høyreGren() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
-    public String lengstGren() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
-    public String[] grener() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
-    public String bladnodeverdier() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
-    public String postString() {
-        throw new UnsupportedOperationException("Ikke kodet ennå!"); }
+
+        public String høyreGren() {
+
+            if (tom()) {
+                return "[]";
+            }
+
+            if(antall == 1){
+                return "[" + rot + "]";
+            }
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("[");
+
+            Node<T> p = rot;
+
+            sb.append(rot.verdi + ", ");
+
+
+            while(p.venstre != null || p.høyre != null){
+
+                if(p.høyre != null){
+                    p = p.høyre;
+                }
+                else if(p.venstre != null){
+                    p = p.venstre;
+                }
+                if(p.venstre == null && p.høyre == null){
+                    sb.append(p.verdi + "]");
+                }else{
+                    sb.append(p.verdi + ", ");
+                }
+
+            }
+
+            return sb.toString();
+        }
+
+
+
+        public String lengstGren() {
+            StringBuilder sb = new StringBuilder();
+
+            if(antall == 0){
+                return "[]";
+            }
+
+            Node<T> p = rot;
+
+            while (p.venstre != null) {
+                p = p.venstre;
+            }
+
+            Deque<Node> bladNoder = new ArrayDeque();
+            bladNoder.push(p);
+
+            while(p != null){
+                p = nesteInorden(p);
+                if(p == null){
+                    break;
+                }
+                if(p.venstre == null && p.høyre == null){
+                    bladNoder.push(p);
+                }
+            }
+
+            //for hver bladnode, sjekk antall linjer til rot
+
+            int maxLength = 0;
+            Node<T> finalNode = null;
+
+            Node<T> node = null;
+
+            while(!bladNoder.isEmpty()){
+                int currentLength = 0;
+                node = bladNoder.pop();
+                Node<T> temp = node;
+
+                while(node.forelder != null) {
+                    currentLength++;
+                    node = node.forelder;
+                }
+
+                //oppdater max og hvilken node som er lengst
+                if(currentLength >= maxLength){
+                    maxLength = currentLength;
+                    finalNode = temp;
+                }
+            }
+
+            Deque<Node> nodesToPrint = new ArrayDeque<>();
+            while(finalNode.forelder != null){
+                nodesToPrint.push(finalNode);
+                finalNode = finalNode.forelder;
+            }
+
+            sb.append("[");
+            nodesToPrint.push(node);
+
+            while(!nodesToPrint.isEmpty()){
+                sb.append(nodesToPrint.pop());
+                if(nodesToPrint.size() == 0){
+                    sb.append("]");
+                }else{
+                    sb.append(", ");
+                }
+            }
+
+            return sb.toString();
+        }
+
+        public String[] grener() {
+            throw new UnsupportedOperationException("Ikke kodet ennå!");
+        }
+
+
+        public String bladnodeverdier() {
+            throw new UnsupportedOperationException("Ikke kodet ennå!");
+        }
+
+        public String postString() {
+            throw new UnsupportedOperationException("Ikke kodet ennå!");
+        }
 
         @Override
         public Iterator<T> iterator() {
