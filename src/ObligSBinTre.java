@@ -63,6 +63,7 @@ public class ObligSBinTre<T> implements Beholder<T>{
             else if (cmp < 0) q.venstre = p;         // venstre barn til q
             else q.høyre = p;                        // høyre barn til q
 
+            endringer++;                             // endringer øker med eéé
             antall++;                                // én verdi mer i treet
             return true;                             // vellykket innlegging
         }
@@ -607,12 +608,21 @@ public class ObligSBinTre<T> implements Beholder<T>{
 
 
         private class BladnodeIterator implements Iterator<T> {
+
             private Node<T> p = rot, q = null;
             private boolean removeOK = false;
             private int iteratorendringer = endringer;
+
             // konstruktør
             private BladnodeIterator() {
-                throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+                if(antall > 0) {
+                    while (p.venstre != null) {
+                        p = p.venstre;
+                        iteratorendringer = endringer;
+                        //loop høyre
+                    }
+                }
             }
 
             @Override
@@ -622,7 +632,44 @@ public class ObligSBinTre<T> implements Beholder<T>{
 
             @Override
             public T next() {
-                throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+                if(!hasNext()){
+                    throw new NoSuchElementException("Ingen flere!");
+                }
+
+                if(antall == 0) {
+                    throw new NoSuchElementException();
+                }
+
+                removeOK = false;
+
+                //q = p-1
+                T verdi = null;
+
+
+
+                while(p != null){
+
+                    q = p;
+                    p = nesteInorden(p);
+
+//                    if(p == null){
+//                        System.out.println("hahaha");
+//                        break;
+//                    }
+
+                    if(q.venstre == null && q.høyre == null){
+                        verdi = q.verdi;
+                        break;
+                    }
+
+
+                }
+
+                if(hasNext()) {
+                    p = nesteInorden(p);
+                }
+                return verdi;
             }
 
             @Override

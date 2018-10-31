@@ -9,8 +9,11 @@ public class Main {
 
         for (char c : verdier) tre.leggInn(c);
 
-        System.out.println(tre.postString());
-// [D, E, G, F, C, H, B, A, K, N, M, L, Q, P, O, S, R, J, T, I]
+
+        for (Character c : tre) {
+            System.out.print(c + " "); // D G K N Q S
+        }
+
 
     }
 }
