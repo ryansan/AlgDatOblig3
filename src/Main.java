@@ -9,8 +9,8 @@ public class Main {
 
         for (char c : verdier) tre.leggInn(c);
 
+        System.out.println(tre.postString());
+// [D, E, G, F, C, H, B, A, K, N, M, L, Q, P, O, S, R, J, T, I]
 
-        System.out.println(tre.lengstGren());
-        // Utskrift: [I, T, J, R, S] [I, A, B, H, C, F, E, D]
     }
 }

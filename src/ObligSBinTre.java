@@ -427,6 +427,7 @@ public class ObligSBinTre<T> implements Beholder<T>{
             }
 
             Deque<Node> nodesToPrint = new ArrayDeque<>();
+
             while(finalNode.forelder != null){
                 nodesToPrint.push(finalNode);
                 finalNode = finalNode.forelder;
@@ -448,16 +449,155 @@ public class ObligSBinTre<T> implements Beholder<T>{
         }
 
         public String[] grener() {
-            throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+
+            if(antall == 0){
+                return new String[0];
+            }
+
+            if(antall == 1){
+                String s = "[" + rot.verdi + "]";
+                String[] returnString = new String[1];
+                returnString[0] = s;
+                return returnString;
+            }
+            Node<T> p = rot;
+
+            while (p.venstre != null) {
+                p = p.venstre;
+            }
+
+            Deque<Node> bladNoder = new ArrayDeque();
+
+            while(p != null){
+                p = nesteInorden(p);
+                if(p == null){
+                    break;
+                }
+                if(p.venstre == null && p.høyre == null){
+                    bladNoder.push(p);
+                }
+                else{
+
+                }
+            }
+
+            //har nå alle bladnoder
+            //forelder loop til topp og lagre veier
+
+            String[] s = new String[bladNoder.size()];
+
+            Node<T> node;
+
+
+
+            int teller = 0;
+            while(!bladNoder.isEmpty()){
+                Deque<Node> omvendtQ = new ArrayDeque<>();
+
+                node = bladNoder.removeLast();
+                s[teller] = "[";
+
+                while(node != null){
+                    omvendtQ.push(node);
+                    node = node.forelder;
+                }
+                //legg inn riktig vei
+                while(!omvendtQ.isEmpty()){
+                    Node<T> temp = omvendtQ.pop();
+
+                    if(omvendtQ.size() == 0){
+                        s[teller] += temp.verdi + "]";
+                    }else{
+                        s[teller] += temp.verdi + ", ";
+                    }
+                }
+
+                teller++;
+            }
+
+
+            return s;
         }
 
 
         public String bladnodeverdier() {
-            throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+            if(antall == 0){
+                return "[]";
+            }
+
+            Node<T> p = rot;
+            StringBuilder s = new StringBuilder();
+
+
+            s.append("[");
+            rekursivInorden(p,s);
+
+            s.replace(s.length()-2,s.length(),"]");
+
+            return s.toString();
+        }
+
+
+        private static <T> void rekursivInorden(Node p, StringBuilder s){
+            if (p.venstre != null){
+                rekursivInorden(p.venstre,s);
+            }
+
+            if(p.venstre == null && p.høyre == null){
+                s.append(p.verdi + ", ");
+            }
+
+            if (p.høyre != null){
+                rekursivInorden(p.høyre,s);
+            }
         }
 
         public String postString() {
-            throw new UnsupportedOperationException("Ikke kodet ennå!");
+            if(antall == 0){
+                return "[]";
+            }
+            if(antall == 1){
+                return "[" + rot.verdi + "]";
+            }
+
+            StringBuilder sb = new StringBuilder();
+
+
+
+            Deque<Node> stack1 = new ArrayDeque();
+            Deque<Node> stack2 = new ArrayDeque();
+
+            Node<T> p;
+            stack1.push(rot);
+
+
+            while(!stack1.isEmpty()){
+
+                p = stack1.pop();
+                stack2.push(p);
+
+                if(p.venstre != null){
+                    stack1.push(p.venstre);
+                }
+
+                if(p.høyre != null){
+                    stack1.push(p.høyre);
+                }
+            }
+
+            sb.append("[");
+
+            while(!stack2.isEmpty()){
+                if(stack2.size() == 1){
+                    sb.append(stack2.pop().verdi + "]");
+                }else{
+                    sb.append(stack2.pop().verdi + ", ");
+                }
+
+            }
+            return sb.toString();
         }
 
         @Override
