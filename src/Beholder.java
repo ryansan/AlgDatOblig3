@@ -18,9 +18,11 @@ public interface Beholder<T> extends Iterable<T>  // ny versjon
         boolean fjernet = false;
         for (Iterator<T> i = iterator(); i.hasNext(); )  // løkke
         {
+            //String s = toString();
             if (p.test(i.next()))                          // betingelsen
             {
                 i.remove(); fjernet = true;                  // fjerner
+                //s = toString();
             }
         }
         return fjernet;
